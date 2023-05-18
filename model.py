@@ -10,7 +10,7 @@ class Net(nn.Module):
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.fc1 = nn.Linear(16 * 5 * 5, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 5)
+        self.fc3 = nn.Linear(84, 8)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -32,7 +32,7 @@ class Resnet50Pretrained(nn.Module):
         self.model.fc = nn.Sequential(
                nn.Linear(2048, 128),
                nn.ReLU(inplace=True),
-               nn.Linear(128, 6))
+               nn.Linear(128, 8))
 
     def forward(self, x):
         return self.model(x)
@@ -43,7 +43,7 @@ class Resnet18Pretrained(nn.Module):
         # self.model = resnet50(weights=ResNet50_Weights.DEFAULT)
         self.model = models.resnet18(pretrained=True)
         self.model.fc = nn.Sequential(
-               nn.Linear(512, 6))
+               nn.Linear(512, 8))
 
     def forward(self, x):
         return self.model(x)
@@ -56,7 +56,7 @@ class MobileNetV2Pretrained(nn.Module):
         self.fc = nn.Sequential(
                nn.Linear(1000, 128),
                nn.ReLU(inplace=True),
-               nn.Linear(128, 2))
+               nn.Linear(128, 8))
 
     def forward(self, x):
         x = self.model(x)

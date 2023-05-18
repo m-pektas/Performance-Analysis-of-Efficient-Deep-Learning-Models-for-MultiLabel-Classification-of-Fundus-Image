@@ -1,19 +1,24 @@
 
-from loader import CelebHQLoader
+from loader import ODIR5K
 from torch.utils.data import DataLoader
 from train import TrainManager
+import numpy as np
+import torch
+import random
+import os
 
 class Trainer:
 
     def __init__(self, params):
         self.params = params
+        self.set_seed()
 
-        train_dataset = CelebHQLoader(self.params.get("img_dir"),
+        train_dataset = ODIR5K(self.params.get("img_dir"),
                                      self.params.get("label_dir"),
                                      train_test_size=self.params.get("train_test_size"), 
                                      is_train=True)
         
-        test_dataset = CelebHQLoader(self.params.get("img_dir"),
+        test_dataset = ODIR5K(self.params.get("img_dir"),
                                      self.params.get("label_dir"),
                                      train_test_size=self.params.get("train_test_size"), 
                                      is_train=False)
@@ -26,7 +31,19 @@ class Trainer:
                               batch_size=self.params["batch_size"],
                               shuffle=self.params["shuffle"],
                               num_workers=self.params["num_workers"])
-                
+    def set_seed(seed: int = 42) -> None:
+        np.random.seed(seed)
+        random.seed(seed)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        # When running on the CuDNN backend, two further options must be set
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        # Set a fixed value for the hash seed
+        os.environ["PYTHONHASHSEED"] = str(seed)
+        print(f"Random seed set as {seed}")
+
+
     def run(self):
         train_manager = TrainManager(train_loader=self.train_loader,
                                      test_loader=self.test_loader, 
@@ -41,23 +58,24 @@ class Trainer:
 if __name__ == "__main__":
 
     params = {
-              "exp_name":"exp_5binaryfixed",
-              "img_dir": "data/Celaba_StyleganAligned",
-              "label_dir" : "data/combined_annotation.txt",
+              "exp_name":"EDD_First_Exp",
+              "img_dir": "data/preprocessed_images",
+              "label_dir" : "data/full_df.csv",
               "log_dir":"logs",
-              "epochs": 50,
-              "model_name": "MobileNetV2Pretrained",
+              "epochs": 100,
+              "model_name": "Resnet50Pretrained",
               "device" : "cuda",
-              "batch_size": 20,
+              "batch_size": 15,
               "shuffle": True,
               "num_workers": 4,
               "logger_name": "tensorboard",
               "logging_active": True,
               "vis_print_per_iter": 5,
-              "test_per_iter": 20,
+              "test_per_iter": 100,
               "train_test_size": 0.7,
               "load_model": False,
               "load_model_path": "logs/exp_2/tb_2022_11_11-03:19:29_PM/models/net_best_epoch_1__iter_80__loss_1.3364__acc_0.45.pth"}
 
+    
     trainer = Trainer(params)
     trainer.run()
