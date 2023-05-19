@@ -6,7 +6,8 @@ import numpy as np
 import os
 from logger import Log
 from datetime import datetime
-
+from loguru import logger as printer
+from utils import EarlyStopper
 # os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 
 class TrainManager:
@@ -18,8 +19,10 @@ class TrainManager:
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
+        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, 'min')
         self.criterion = nn.CrossEntropyLoss()
         self.device = device
+        self.early_stopper = EarlyStopper(patience=kwargs["patience"])
 
        
         self.best_loss = float("inf")
@@ -35,7 +38,7 @@ class TrainManager:
         else:
             self.train_index = 0
             self.epoch_start = 1
-            self.batch_start = 1
+            self.batch_start = 0
 
         self.test_index = 0
         
@@ -55,9 +58,10 @@ class TrainManager:
                 loss = self.criterion(output, label)
                 loss.backward()
                 self.optimizer.step()
+                
 
                 if self.train_index % self.kwargs["vis_print_per_iter"] == 0:
-                    print(f"Epoch| batch : {epoch} | {batch_idx} / {len(self.train_loader)} -> Train Loss: {loss.item()}" )
+                    printer.info(f"Epoch| batch : {epoch} | {batch_idx} / {len(self.train_loader)} -> Train Loss: {loss.item()}" )
                     self.log.logger.log_scaler({"Train/CrossEntropyLoss": loss.item()}, self.train_index)
                     
                     pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
@@ -67,17 +71,22 @@ class TrainManager:
                 if self.train_index % self.kwargs["test_per_iter"] == 0:
                     val_loss = self.test()
 
-                    if val_loss < self.best_loss:
+                    if self.early_stopper.early_stop(val_loss):
+                        printer.warning("Early Stopping")
+                        break
+                    
+                    self.scheduler.step(val_loss)
+                    if val_loss < self.best_loss and self.kwargs["logging_active"]:
                         self.best_loss = val_loss
                         self.log.logger.log_model(self.model, epoch, batch_idx, round(self.best_loss,4), acc)
-                        print("Model saved")
+                        printer.info("Model saved")
 
 
         print("End of the Training :)")   
         
     
     def test(self):
-        print("Testing ...")
+        printer.info("Testing ...")
         self.model.eval()
         test_loss = []
         test_acc = []
@@ -103,8 +112,7 @@ class TrainManager:
                 
             
             
-            print("Mean Test Loss:", np.mean(test_loss))
-            print("Mean Test Accuracy:", np.mean(test_acc))
+            printer.info(f"Mean Test Loss: {np.mean(test_loss)}")
+            printer.info(f"Mean Test Accuracy:  {np.mean(test_acc)}")
         return np.mean(test_loss)
         
-    

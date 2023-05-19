@@ -61,7 +61,18 @@ class MobileNetV2Pretrained(nn.Module):
     def forward(self, x):
         x = self.model(x)
         return self.fc(x)
-           
+
+class Resnext50_32x4dPretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.resnext50_32x4d(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)
+
+
 def get_model(model_name, device, kwargs):
     model = None
     if model_name == "net":
@@ -72,6 +83,8 @@ def get_model(model_name, device, kwargs):
         model = MobileNetV2Pretrained().to(device)
     elif model_name == "Resnet18Pretrained":
         model = Resnet18Pretrained().to(device)
+    elif model_name == "Resnext50_32x4dPretrained":
+        model = Resnext50_32x4dPretrained().to(device)
     else:
         raise Exception("Model not found")
 

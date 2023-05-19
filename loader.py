@@ -8,7 +8,7 @@ import glob
 import pandas as pd
 import torch.nn.functional as F
 import numpy as np
-
+from loguru import logger as printer
 class ODIR5K(Dataset):
 
     def __init__(self, data_path : str, annotation_path : str, train_test_size : float,  is_train : bool ):
@@ -35,10 +35,14 @@ class ODIR5K(Dataset):
         if is_train:
             set_size = int(df.target.shape[0]*train_test_size)  
             df = df.head(set_size)
+            printer.info(f"Train set size: {set_size}")
+            printer.info(f"Train set distribution: {df.target.value_counts()}")
             
         else:
             set_size = int(df.target.shape[0]*(1-train_test_size))
             df = df.tail(set_size)
+            printer.info(f"Test set size: {set_size}")
+            printer.info(f"Test set distribution: {df.target.value_counts()}")
         
         self.df = df
         
