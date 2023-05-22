@@ -11,7 +11,7 @@ import numpy as np
 from loguru import logger as printer
 class ODIR5K(Dataset):
 
-    def __init__(self, data_path : str, annotation_path : str, train_test_size : float,  is_train : bool ):
+    def __init__(self, data_path : str, annotation_path : str, train_test_size : float,  is_train : bool, augment : bool = False ):
         self.data_path = data_path
         self.annotation_path = annotation_path
 
@@ -46,14 +46,21 @@ class ODIR5K(Dataset):
         
         self.df = df
         
-        self.img_transform= T.Compose([
-            T.Resize((224, 224)),
-            # T.RandomRotation(degrees=15),
-            # T.ColorJitter(brightness=5),
-            # T.RandomHorizontalFlip(),
-            T.ToTensor(),
-            T.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-        ])
+
+        if augment:
+            self.img_transform= T.Compose([
+                T.Resize((224, 224)),
+                 T.RandomEqualize(0.5),
+                T.ToTensor(),
+                T.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+            ])
+
+        else:
+            self.img_transform= T.Compose([
+                T.Resize((224, 224)),
+                T.ToTensor(),
+                T.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+            ])
     
     
             

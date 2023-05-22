@@ -69,17 +69,18 @@ class TrainManager:
                     self.log.logger.log_scaler({"Train/Accuracy": acc}, self.train_index)
 
                 if self.train_index % self.kwargs["test_per_iter"] == 0:
-                    val_loss = self.test()
+                    val_loss, val_acc = self.test()
 
                     if self.early_stopper.early_stop(val_loss):
                         printer.warning("Early Stopping")
-                        break
+                        exit("Program stopped by Early Stopping")
                     
                     self.scheduler.step(val_loss)
                     if val_loss < self.best_loss and self.kwargs["logging_active"]:
                         self.best_loss = val_loss
-                        self.log.logger.log_model(self.model, epoch, batch_idx, round(self.best_loss,4), acc)
+                        self.log.logger.log_model(self.model, epoch, batch_idx, round(self.best_loss,4), val_acc)
                         printer.info("Model saved")
+                        printer.info(f"Best Loss: {self.best_loss} | Accuracy: {val_acc}")
 
 
         print("End of the Training :)")   
@@ -107,12 +108,11 @@ class TrainManager:
                     self.log.logger.log_scaler({"Test/CrossEntropyLoss": loss.item()}, self.test_index )
                     self.log.logger.log_scaler({"Test/Accuracy": acc}, self.train_index)
                 
-                # if self.test_index > 50:
-                #     break
+              
                 
             
             
             printer.info(f"Mean Test Loss: {np.mean(test_loss)}")
             printer.info(f"Mean Test Accuracy:  {np.mean(test_acc)}")
-        return np.mean(test_loss)
+        return np.mean(test_loss), np.mean(test_acc)
         

@@ -20,12 +20,12 @@ class Trainer:
         train_dataset = ODIR5K(self.params.get("img_dir"),
                                      self.params.get("label_dir"),
                                      train_test_size=self.params.get("train_test_size"), 
-                                     is_train=True)
+                                     is_train=True, augment=self.params.get("augment") )
         
         test_dataset = ODIR5K(self.params.get("img_dir"),
                                      self.params.get("label_dir"),
                                      train_test_size=self.params.get("train_test_size"), 
-                                     is_train=False)
+                                     is_train=False, augment=self.params.get("augment"))
         
         self.train_loader = DataLoader(dataset=train_dataset,
                               batch_size=self.params["batch_size"],
@@ -67,18 +67,19 @@ if __name__ == "__main__":
               "label_dir" : "data/full_df.csv",
               "log_dir":"logs",
               "epochs": 100,
-              "model_name": "Resnext50_32x4dPretrained",
+              "model_name": "SwinTPretrained",
               "device" : "cuda",
               "batch_size": 15,
               "shuffle": True,
-              "patience" : 10,
+              "patience" : 20,
               "num_workers": 4,
               "logger_name": "tensorboard",
               "logging_active": True,
               "vis_print_per_iter": 5,
-              "test_per_iter": 50,
+              "test_per_iter": 25,
               "train_test_size": 0.7,
               "load_model": False,
+              "augment": False,
               "load_model_path": "logs/exp_2/tb_2022_11_11-03:19:29_PM/models/net_best_epoch_1__iter_80__loss_1.3364__acc_0.45.pth"}
 
     

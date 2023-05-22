@@ -29,13 +29,11 @@ class Resnet50Pretrained(nn.Module):
         super().__init__()
         # self.model = resnet50(weights=ResNet50_Weights.DEFAULT)
         self.model = models.resnext50_32x4d(pretrained=True)
-        self.model.fc = nn.Sequential(
-               nn.Linear(2048, 128),
-               nn.ReLU(inplace=True),
-               nn.Linear(128, 8))
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
 
     def forward(self, x):
-        return self.model(x)
+        x = self.model(x)
+        return self.edd_head(x)
 
 class Resnet18Pretrained(nn.Module):
     def __init__(self):
@@ -72,6 +70,77 @@ class Resnext50_32x4dPretrained(nn.Module):
         x = self.model(x)
         return self.edd_head(x)
 
+class Resnext101_32x8dPretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.resnext101_32x8d(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)   
+
+
+class EfficientNetB3Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.efficientnet_b3(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+
+class EfficientNetB4Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.efficientnet_b4(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+
+class ViTB16Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.vit_b_16(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+    
+
+class SwinSPretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.swin_s(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+
+class SwinTPretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.swin_t(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+
+class Convnext_TinyPretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.convnext_tiny(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)
 
 def get_model(model_name, device, kwargs):
     model = None
@@ -85,6 +154,20 @@ def get_model(model_name, device, kwargs):
         model = Resnet18Pretrained().to(device)
     elif model_name == "Resnext50_32x4dPretrained":
         model = Resnext50_32x4dPretrained().to(device)
+    elif model_name == "Resnext101_32x8dPretrained":
+        model = Resnext101_32x8dPretrained().to(device)
+    elif model_name == "Convnext_TinyPretrained":
+        model = Convnext_TinyPretrained().to(device)
+    elif model_name == "EfficientNetB3Pretrained":
+        model = EfficientNetB3Pretrained().to(device)
+    elif model_name == "EfficientNetB4Pretrained":
+        model = EfficientNetB4Pretrained().to(device)
+    elif model_name == "ViTB16Pretrained":
+        model = ViTB16Pretrained().to(device)
+    elif model_name == "SwinSPretrained":
+        model = SwinSPretrained().to(device)
+    elif model_name == "SwinTPretrained":
+        model = SwinTPretrained().to(device)
     else:
         raise Exception("Model not found")
 
