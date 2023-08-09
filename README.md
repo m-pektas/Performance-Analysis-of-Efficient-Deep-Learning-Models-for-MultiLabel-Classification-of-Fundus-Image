@@ -1,5 +1,6 @@
-# EDD
-Eye Disease Diagnosis
+# Performance Analysis of Efficient Deep Learning Models for Multi-Label Classification of Fundus Image
+
+Eye Disease Diagnosis from Fundus Image
 
 
 #### 1) Create a new environment
