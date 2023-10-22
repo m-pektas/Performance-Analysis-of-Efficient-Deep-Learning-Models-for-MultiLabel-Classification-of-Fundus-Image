@@ -1,6 +1,6 @@
 # Performance Analysis of Efficient Deep Learning Models for MultiLabel Classification of Fundus Image
 
- [Paper](https://dergipark.org.tr/tr/download/article-file/3202713) | Published in  ARTIFICIAL INTELLIGENCE THEORY AND APPLICATIONS 2023 (AITA 2023)
+[Paper](https://dergipark.org.tr/tr/download/article-file/3202713) | Published in  ARTIFICIAL INTELLIGENCE THEORY AND APPLICATIONS 2023 (AITA 2023)
 
 **Abstract**
 
@@ -23,6 +23,7 @@ findings demonstrate that the efficientnetb3 model outperforms the other models,
 highest level of performance. And also, when applying standard data augmentation techniques
 to the current dataset, we observe decreasing in f1-score and accuracy.
 
+<img src="docs/preview.png" alt="preview" width="50%"/>
 
 ## Create  environment
 
