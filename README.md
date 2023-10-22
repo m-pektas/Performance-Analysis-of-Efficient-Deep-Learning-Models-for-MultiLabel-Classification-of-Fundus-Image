@@ -23,7 +23,7 @@ findings demonstrate that the efficientnetb3 model outperforms the other models,
 highest level of performance. And also, when applying standard data augmentation techniques
 to the current dataset, we observe decreasing in f1-score and accuracy.
 
-<img src="docs/preview.png" alt="preview" width="75%"/>
+<img src="docs/preview.png" alt="preview"/>
 
 ## Create  environment
 
