@@ -51,14 +51,50 @@ class MobileNetV2Pretrained(nn.Module):
     def __init__(self):
         super().__init__()
         self.model = models.mobilenet_v2(pretrained=True)
-        self.fc = nn.Sequential(
-               nn.Linear(1000, 128),
-               nn.ReLU(inplace=True),
-               nn.Linear(128, 8))
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
 
     def forward(self, x):
         x = self.model(x)
-        return self.fc(x)
+        return self.edd_head(x)
+class MobileNetV3_S_Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.mobilenet_v3_small(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)
+
+class MobileNetV3_L_Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.mobilenet_v3_large(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)
+
+class SqueezeNet_10_Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.squeezenet1_0(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)
+
+class SqueezeNet_11_Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.squeezenet1_1(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)
 
 class Resnext50_32x4dPretrained(nn.Module):
     def __init__(self):
@@ -91,10 +127,50 @@ class EfficientNetB3Pretrained(nn.Module):
         x = self.model(x)
         return self.edd_head(x)  
 
+class EfficientNetB1Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.efficientnet_b1(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+    
+class EfficientNetB2Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.efficientnet_b2(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+
+class EfficientNetB0Pretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.efficientnet_b0(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+
 class EfficientNetB4Pretrained(nn.Module):
     def __init__(self):
         super().__init__()
         self.model = models.efficientnet_b4(pretrained=True)
+        self.edd_head = nn.Sequential(nn.Linear(1000, 8))
+
+    def forward(self, x):
+        x = self.model(x)
+        return self.edd_head(x)  
+    
+class EfficientNetV2MPretrained(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.efficientnet_v2_l(pretrained=True)
         self.edd_head = nn.Sequential(nn.Linear(1000, 8))
 
     def forward(self, x):
@@ -150,6 +226,14 @@ def get_model(model_name, device, kwargs):
         model =  Resnet50Pretrained().to(device)
     elif model_name == "MobileNetV2Pretrained":
         model = MobileNetV2Pretrained().to(device)
+    elif model_name == "MobileNetV3_S_Pretrained":
+        model = MobileNetV3_S_Pretrained().to(device)
+    elif model_name == "MobileNetV3_L_Pretrained":
+        model = MobileNetV3_L_Pretrained().to(device)
+    elif model_name == "SqueezeNet_10_Pretrained":
+        model = SqueezeNet_10_Pretrained().to(device)
+    elif model_name == "SqueezeNet_11_Pretrained":
+        model = SqueezeNet_11_Pretrained().to(device)
     elif model_name == "Resnet18Pretrained":
         model = Resnet18Pretrained().to(device)
     elif model_name == "Resnext50_32x4dPretrained":
@@ -160,8 +244,16 @@ def get_model(model_name, device, kwargs):
         model = Convnext_TinyPretrained().to(device)
     elif model_name == "EfficientNetB3Pretrained":
         model = EfficientNetB3Pretrained().to(device)
+    elif model_name == "EfficientNetB1Pretrained":
+        model = EfficientNetB1Pretrained().to(device)
+    elif model_name == "EfficientNetB2Pretrained":
+        model = EfficientNetB2Pretrained().to(device)
+    elif model_name == "EfficientNetB0Pretrained":
+        model = EfficientNetB0Pretrained().to(device)
     elif model_name == "EfficientNetB4Pretrained":
         model = EfficientNetB4Pretrained().to(device)
+    elif model_name == "EfficientNetV2MPretrained":
+        model = EfficientNetV2MPretrained().to(device)
     elif model_name == "ViTB16Pretrained":
         model = ViTB16Pretrained().to(device)
     elif model_name == "SwinSPretrained":

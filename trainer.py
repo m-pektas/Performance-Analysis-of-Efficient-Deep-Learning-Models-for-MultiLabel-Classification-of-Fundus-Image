@@ -7,7 +7,7 @@ import torch
 import random
 import os
 from loguru import logger as printer
-
+import argparse
 class Trainer:
 
     def __init__(self, params):
@@ -35,6 +35,7 @@ class Trainer:
                               batch_size=self.params["batch_size"],
                               shuffle=self.params["shuffle"],
                               num_workers=self.params["num_workers"])
+        
     def set_seed(self, seed: int = 42) -> None:
         np.random.seed(seed)
         random.seed(seed)
@@ -61,27 +62,29 @@ class Trainer:
     
 if __name__ == "__main__":
 
-    params = {
-              "exp_name":"EDD_Seed_and_LRSchedular_Exp",
-              "img_dir": "data/preprocessed_images",
-              "label_dir" : "data/full_df.csv",
-              "log_dir":"logs",
-              "epochs": 100,
-              "model_name": "SwinTPretrained",
-              "device" : "cuda",
-              "batch_size": 15,
-              "shuffle": True,
-              "patience" : 20,
-              "num_workers": 4,
-              "logger_name": "tensorboard",
-              "logging_active": True,
-              "vis_print_per_iter": 5,
-              "test_per_iter": 25,
-              "train_test_size": 0.7,
-              "load_model": False,
-              "augment": False,
-              "load_model_path": "logs/exp_2/tb_2022_11_11-03:19:29_PM/models/net_best_epoch_1__iter_80__loss_1.3364__acc_0.45.pth"}
-
+    parser = argparse.ArgumentParser(description='Trainer')
+    parser.add_argument('--exp_name', default="EDD_Seed_and_LRSchedular_Exp")
+    parser.add_argument('--img_dir', default="data/preprocessed_images")
+    parser.add_argument('--label_dir', default="data/full_df.csv")
+    parser.add_argument('--log_dir', default="logs")
+    parser.add_argument('--logger_name', default="tensorboard")
+    parser.add_argument('--logging_active', default=True)
+    parser.add_argument('--vis_print_per_iter', default=5)
+    parser.add_argument('--test_per_iter', default=25)
+    parser.add_argument('--model_name', default="EfficientNetB3Pretrained")
+    parser.add_argument('--epochs', default=100)
+    parser.add_argument('--batch_size', default=15)
+    parser.add_argument('--shuffle', default=True)
+    parser.add_argument('--patience', default=20)
+    parser.add_argument('--train_test_size', default=0.9)
+    parser.add_argument('--device', default="cuda")
+    parser.add_argument('--num_workers', default=4)
+    parser.add_argument('--augment', default=None)
+    parser.add_argument('--load_model', default=False)
+    parser.add_argument('--load_model_path', default="logs/exp_2/tb_2022_11_11-03:19:29_PM/models/net_best_epoch_1__iter_80__loss_1.3364__acc_0.45.pth")
+    args = parser.parse_args()
+    params = vars(args)
+    print(params)
     
     trainer = Trainer(params)
     trainer.run()

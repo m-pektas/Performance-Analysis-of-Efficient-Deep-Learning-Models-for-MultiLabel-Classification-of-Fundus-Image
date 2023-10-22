@@ -1,31 +1,25 @@
-import torch.nn as nn
-import torch.nn.functional as F
-import torch
-from torchvision import models
 import torchvision.transforms as T
 from PIL import Image
-
-class MobileNetV2Pretrained(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.model = models.mobilenet_v2()
-        self.fc = nn.Sequential(
-               nn.Linear(1000, 128),
-               nn.ReLU(inplace=True),
-               nn.Linear(128, 2))
-
-    def forward(self, x):
-        x = self.model(x)
-        return self.fc(x)
-
-
+import argparse
+from model import get_model 
+import torch
 
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser(description='Trainer')
+    
+    parser.add_argument('--model_name', default="EfficientNetB3Pretrained")
+    parser.add_argument('--model_path', default="logs/exp_2/tb_2022_11_11-03:19:29_PM/models/net_best_epoch_1__iter_80__loss_1.3364__acc_0.45.pth")
+    parser.add_argument('--device', default="cuda")
+    parser.add_argument('--image_path', default="data/preprocessed_images/0_left.jpg")
+    args = parser.parse_args()
+    params = vars(args)
+    print(params)
 
-    model = MobileNetV2Pretrained()
-    model.load_state_dict(torch.load("logs/exp_5binaryfixed/tb_2022_11_26-01:42:39_AM/models/net_best_epoch_44__iter_170__loss_0.3678__acc_0.95.pth"))
+
+    model = get_model(args.model_name, args.device, {})
+    model.load_state_dict(torch.load(args.model_path))
     model.eval()
 
 
@@ -35,10 +29,21 @@ if __name__ == "__main__":
             T.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
         ])
 
-    classes = {0 : "Without Facial Hair", 1 : "With Facial Hair"}
+    classes = {
+        0 : "N", 
+        1 : "D",
+        2 : "G",
+        3 : "C", 
+        4 : "A",
+        5 : "H",
+        6 : "M", 
+        7 : "O"
+        }
+
+
     
-    img = Image.open("data/Celaba_StyleganAligned/012065.png")
-    img = img_transform(img).unsqueeze(0)
+    img = Image.open(args.image_path)
+    img = img_transform(img).unsqueeze(0).to(args.device)
     output = model(img)
     pred = output.argmax(dim=1, keepdim=True).item()
 

@@ -53,6 +53,7 @@ class TrainManager:
                 self.train_index += 1
                 self.model.train()
                 data, label = batch["data"].to(self.device), batch["label"].to(self.device)
+                
                 self.optimizer.zero_grad()
                 output = self.model(data)
                 loss = self.criterion(output, label)
@@ -61,6 +62,7 @@ class TrainManager:
                 
 
                 if self.train_index % self.kwargs["vis_print_per_iter"] == 0:
+                    self.log.logger.log_image(data, self.train_index, stage="Train")
                     printer.info(f"Epoch| batch : {epoch} | {batch_idx} / {len(self.train_loader)} -> Train Loss: {loss.item()}" )
                     self.log.logger.log_scaler({"Train/CrossEntropyLoss": loss.item()}, self.train_index)
                     
@@ -105,8 +107,11 @@ class TrainManager:
 
 
                 if self.test_index % self.kwargs["vis_print_per_iter"] == 0:
+                    self.log.logger.log_image(data, self.train_index, stage="Test")
                     self.log.logger.log_scaler({"Test/CrossEntropyLoss": loss.item()}, self.test_index )
                     self.log.logger.log_scaler({"Test/Accuracy": acc}, self.train_index)
+                    
+                   
                 
               
                 

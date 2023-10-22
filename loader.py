@@ -47,20 +47,28 @@ class ODIR5K(Dataset):
         self.df = df
         
 
-        if augment:
+        if augment is None:
             self.img_transform= T.Compose([
                 T.Resize((224, 224)),
-                 T.RandomEqualize(0.5),
                 T.ToTensor(),
                 T.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+            ])
+        elif augment == "Imagenet":
+            self.img_transform= T.Compose([
+                T.AutoAugment(T.AutoAugmentPolicy.IMAGENET),
+                T.ToTensor(),
+                T.Resize((224, 224))
+            ])
+        elif augment == "Cifar10":
+            self.img_transform= T.Compose([
+                T.AutoAugment(T.AutoAugmentPolicy.CIFAR10),
+                T.ToTensor(),
+                T.Resize((224, 224))
             ])
 
         else:
-            self.img_transform= T.Compose([
-                T.Resize((224, 224)),
-                T.ToTensor(),
-                T.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-            ])
+            raise Exception("Augmentation not supported")
+            
     
     
             

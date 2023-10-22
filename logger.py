@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 import os 
 import utils
 import torch
-
+import torchvision
 
 class Log:
     def __init__(self, project_info : str, logger_name : str, is_active : bool, log_dir : str):
@@ -81,7 +81,10 @@ class TBLogger(ILog):
             torch.save(model.state_dict(), f"{models_dir}/net_best_epoch_{epoch}__iter_{step}__loss_{round(loss,4)}__acc_{acc}.pth")
             
     
-
+    def log_image(self, batch, step, stage):
+        if self.is_active:
+            batch = torchvision.utils.make_grid(batch)
+            self.logger.add_images(f"{stage}/images", batch, step, dataformats="CHW")
     
 class WandbLogger(ILog):
     def __init__(self, project_info, log_dir : str, is_active : bool):
