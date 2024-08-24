@@ -1,13 +1,13 @@
 import torch.optim as optim
 from torch import nn 
-from model import get_model 
+from network.model import get_model 
 import torch
 import numpy as np
 import os
-from logger import Log
+from utils.logger import Log
 from datetime import datetime
 from loguru import logger as printer
-from utils import EarlyStopper
+from utils.util import EarlyStopper
 # os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 
 class TrainManager:

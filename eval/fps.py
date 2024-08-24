@@ -1,4 +1,4 @@
-from model import get_model 
+from network.model import get_model 
 import torch
 from tqdm import tqdm
 import argparse

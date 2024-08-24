@@ -4,7 +4,7 @@ from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
 from abc import ABC, abstractmethod
 import os 
-import utils
+import utils.util as util
 import torch
 import torchvision
 
@@ -59,7 +59,7 @@ class TBLogger(ILog):
         date = datetime.now(). strftime("%Y_%m_%d-%I:%M:%S_%p")
         self.log_dir_edited = f"{self.logdir}/tb_{date}"
         os.makedirs(self.log_dir_edited, exist_ok=True)
-        utils.writeJson(project_info, self.log_dir_edited+"/info.json" )
+        util.writeJson(project_info, self.log_dir_edited+"/info.json" )
         self.init(self.log_dir_edited)
         # logging.info("Tensorboard logging is activated !!")
 
@@ -94,7 +94,7 @@ class WandbLogger(ILog):
         self.init(project_info["name"], self.logdir)
         # logging.info("Wandb logging is activated !!")
         wandb.run.name = f"{project_info['archname']}_{wandb.run.id}"
-        utils.writeJson(project_info, wandb.run.dir+"/info.json" )
+        util.writeJson(project_info, wandb.run.dir+"/info.json" )
 
 
     def init(self, name, log_dir):

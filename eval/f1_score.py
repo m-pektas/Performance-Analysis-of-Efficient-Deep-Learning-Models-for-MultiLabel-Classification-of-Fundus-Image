@@ -1,12 +1,12 @@
 
-from loader import ODIR5K
+from dataset.loader import ODIR5K
 from torch.utils.data import DataLoader
 import numpy as np
 import torch
 import random
 import os
 from loguru import logger as printer
-from model import get_model
+from network.model import get_model
 import argparse
 
 class Evaluater:
@@ -53,16 +53,10 @@ class Evaluater:
                 data, label = batch["data"].to(self.device), batch["label"].to(self.device)
                 output = model(data)
                
-            
-
                 pred = output.argmax(dim=1, keepdim=True)
                 true_class += list(label)
                 pred_class += list(pred)
         
-
-
-    
-    
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='F1')

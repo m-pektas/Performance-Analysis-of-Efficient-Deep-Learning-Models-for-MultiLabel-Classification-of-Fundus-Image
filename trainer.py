@@ -1,5 +1,5 @@
 
-from loader import ODIR5K
+from dataset.loader import ODIR5K
 from torch.utils.data import DataLoader
 from train import TrainManager
 import numpy as np
@@ -63,7 +63,7 @@ class Trainer:
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Trainer')
-    parser.add_argument('--exp_name', default="EDD_Seed_and_LRSchedular_Exp")
+    parser.add_argument('--exp_name', default="Default")
     parser.add_argument('--img_dir', default="data/preprocessed_images")
     parser.add_argument('--label_dir', default="data/full_df.csv")
     parser.add_argument('--log_dir', default="logs")
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     parser.add_argument('--test_per_iter', default=25)
     parser.add_argument('--model_name', default="EfficientNetB3Pretrained")
     parser.add_argument('--epochs', default=100)
-    parser.add_argument('--batch_size', default=15)
+    parser.add_argument('--batch_size', default=10)
     parser.add_argument('--shuffle', default=True)
     parser.add_argument('--patience', default=20)
     parser.add_argument('--train_test_size', default=0.9)
